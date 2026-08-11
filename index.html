@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet de bord</title>
+<meta name="theme-color" content="#24303B">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180-maskable.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand"><span class="dot"></span><h1>Carnet de bord</h1></div>
+    <div class="today" id="todayLabel"></div>
+  </header>
+
+  <main>
+    <!-- ===================== SAISIE ===================== -->
+    <section class="view active" id="view-saisie">
+      <div class="card">
+        <h2>Nouvelle activité</h2>
+        <form id="entryForm">
+          <div class="field">
+            <label for="f-date">Date</label>
+            <input type="date" id="f-date" required>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label for="f-start">Début</label>
+              <input type="time" id="f-start" required>
+            </div>
+            <div class="field">
+              <label for="f-end">Fin</label>
+              <input type="time" id="f-end" required>
+            </div>
+          </div>
+          <p class="hint" id="durationPreview"></p>
+
+          <div class="field">
+            <label for="f-cat">Catégorie</label>
+            <select id="f-cat"></select>
+            <div class="cat-add" id="catAddRow" hidden>
+              <input type="text" id="f-newcat" placeholder="Nom de la nouvelle catégorie">
+              <button type="button" id="catAddConfirm">Ajouter</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-desc">Description (texte libre)</label>
+            <textarea id="f-desc" placeholder="Ce que tu as fait, en quelques mots…"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submitBtn">Enregistrer l'activité</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===================== TABLEAU DE BORD ===================== -->
+    <section class="view" id="view-bord">
+      <div class="filters" id="periodFilters">
+        <button data-period="today" class="active">Aujourd'hui</button>
+        <button data-period="week">7 jours</button>
+        <button data-period="month">Ce mois</button>
+        <button data-period="all">Tout</button>
+      </div>
+
+      <div class="summary">
+        <div>
+          <div class="total-time" id="totalTime">0 h 00</div>
+          <div class="total-label">temps consigné</div>
+        </div>
+        <div class="count" id="entryCount">0 activité</div>
+      </div>
+
+      <div class="chart" id="chart"></div>
+
+      <div id="logList"></div>
+
+      <div class="card" id="dataCard">
+        <h2>Données</h2>
+        <p class="hint">Export CSV de la période affichée ci-dessus, ou sauvegarde/restauration complète au format JSON.</p>
+        <div class="btn-row">
+          <button type="button" class="btn btn-ghost" id="btnExportCsv">Exporter en CSV</button>
+        </div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button type="button" class="btn btn-ghost" id="btnExportJson">Sauvegarder (JSON)</button>
+          <button type="button" class="btn btn-ghost" id="btnImportJson">Restaurer…</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-view="saisie" class="active" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+      Saisie
+    </button>
+    <button data-view="bord" type="button">
+      <svg viewBox="0 0 24 24"><path d="M4 19V10M11 19V5M18 19v-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Bord
+    </button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="overlay" id="editOverlay">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2>Modifier l'activité</h2>
+        <button class="close" id="editClose" type="button">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="field">
+          <label for="e-date">Date</label>
+          <input type="date" id="e-date" required>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="e-start">Début</label>
+            <input type="time" id="e-start" required>
+          </div>
+          <div class="field">
+            <label for="e-end">Fin</label>
+            <input type="time" id="e-end" required>
+          </div>
+        </div>
+        <p class="hint" id="editDurationPreview"></p>
+        <div class="field">
+          <label for="e-cat">Catégorie</label>
+          <select id="e-cat"></select>
+        </div>
+        <div class="field">
+          <label for="e-desc">Description</label>
+          <textarea id="e-desc"></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-danger" id="editDelete">Supprimer</button>
+          <button type="submit" class="btn btn-primary" id="editSave">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Carnet de bord",
+  "short_name": "Carnet",
+  "description": "Journal d'activités quotidien avec horaires et catégories, 100% local.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#24303B",
+  "theme_color": "#24303B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-180-maskable.png", "sizes": "180x180", "type": "image/png", "purpose": "maskable" }
+  ]
+}
