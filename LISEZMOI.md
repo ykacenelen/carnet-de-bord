@@ -54,6 +54,7 @@ navigateur, sur ton téléphone.
 | `manifest.json` | déclaration PWA (nom, icônes, couleurs) |
 | `sw.js` | service worker (cache offline, actif seulement en https/localhost) |
 | `icon-192.png`, `icon-512.png`, `icon-180-maskable.png` | icônes |
+| `fonts/` | police JetBrains Mono (heures/dates) + sa licence |
 
 ## Utilisation
 
@@ -65,6 +66,40 @@ navigateur, sur ton téléphone.
   Tout), total de temps consigné, histogramme du temps par catégorie, puis
   la liste chronologique des activités groupées par jour. Toucher une
   activité l'ouvre en modification (et permet de la supprimer).
+
+## Gérer les catégories (renommer, changer la couleur)
+
+Dans l'onglet **Bord**, la carte "Catégories" liste toutes les catégories
+existantes. Touche-en une pour déplier son éditeur :
+
+- **Renommer** : modifie le champ "Nom" puis "Enregistrer" — toutes les
+  activités déjà saisies avec l'ancien nom basculent automatiquement sur
+  le nouveau.
+- **Cas particulier — fusion** : si tu renommes une catégorie avec le nom
+  d'une catégorie qui existe déjà, l'appli te demande confirmation puis
+  fusionne les deux (toutes les activités des deux anciennes catégories
+  se retrouvent sous le nom commun).
+- **Couleur** : choisis une des pastilles de la palette, ou utilise le
+  sélecteur personnalisé (dernier rond) pour une couleur libre. Elle
+  s'applique immédiatement à l'étiquette dans la liste et à la barre dans
+  l'histogramme.
+
+## Récapitulatif journalier repliable
+
+Dès que la période "7 jours", "Ce mois" ou "Tout" est sélectionnée dans
+l'onglet Bord, chaque jour s'affiche replié par défaut (juste la date et
+le total d'heures). Touche l'en-tête d'un jour pour déplier le détail des
+activités de ce jour. En "Aujourd'hui", l'unique journée reste affichée
+en clair, sans repli.
+
+## Police des heures et durées
+
+Les heures, durées et dates utilisent désormais la police **JetBrains
+Mono** (chiffres alignés, bien plus lisible que la police monospace par
+défaut du téléphone), intégrée au projet dans le dossier `fonts/`
+(licence libre SIL Open Font License — voir `fonts/JetBrainsMono-OFL.txt`).
+Elle est mise en cache par le service worker au même titre que le reste,
+donc aucune connexion réseau n'est nécessaire après le premier chargement.
 
 ## Export CSV et sauvegarde JSON
 
@@ -93,6 +128,5 @@ propose trois actions :
   depuis l'appli — pas besoin de toucher au code.
 - **Couleurs** : variables CSS en haut de `style.css` (`:root { --accent:
   ... }`).
-- **Export / sauvegarde des données** : pas encore inclus (volontairement,
-  pour rester simple) — si tu veux un jour un export CSV ou une
-  sauvegarde/restauration JSON, c'est un ajout rapide, dis-le moi.
+- **Export / sauvegarde des données** : voir la section "Export CSV et
+  sauvegarde JSON" ci-dessus.

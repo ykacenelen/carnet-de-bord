@@ -4,6 +4,7 @@
   /* ---------------- Storage ---------------- */
   const LS_ENTRIES = "carnet_entries_v1";
   const LS_CATS = "carnet_categories_v1";
+  const LS_CATCOLORS = "carnet_category_colors_v1";
 
   const DEFAULT_CATS = ["Bricolage", "IA", "Renfo", "Travail", "Sport", "Lecture", "Famille", "Trajet", "Autre"];
   const PALETTE = ["#35634F", "#A6702E", "#3E5C76", "#8C4A6B", "#5B7A3A", "#9C4132", "#4A6E6A", "#7A5C3E"];
@@ -24,13 +25,23 @@
   }
   function saveCats(list) { localStorage.setItem(LS_CATS, JSON.stringify(list)); }
 
+  function loadCatColors() {
+    try { return JSON.parse(localStorage.getItem(LS_CATCOLORS)) || {}; }
+    catch { return {}; }
+  }
+  function saveCatColors(map) { localStorage.setItem(LS_CATCOLORS, JSON.stringify(map)); }
+
   let entries = loadEntries();
   let categories = loadCats();
+  let catColors = loadCatColors();
 
-  function catColor(name) {
+  function hashColor(name) {
     let h = 0;
     for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
     return PALETTE[h % PALETTE.length];
+  }
+  function catColor(name) {
+    return catColors[name] || hashColor(name);
   }
 
   /* ---------------- Helpers ---------------- */
@@ -231,20 +242,30 @@
 
     if (!list.length) {
       listEl.innerHTML = `<div class="empty"><div class="glyph">—</div><p>Aucune activité sur cette période.<br>Ouvre l'onglet Saisie pour en ajouter une.</p></div>`;
+      renderCatManager();
       return;
     }
 
     const byDay = {};
     list.forEach(e => { (byDay[e.date] = byDay[e.date] || []).push(e); });
     const days = Object.keys(byDay).sort().reverse();
+    const collapsible = currentPeriod !== "today";
+    const chevSvg = `<svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
     days.forEach(day => {
-      const group = document.createElement("div");
-      group.className = "day-group";
       const dayEntries = byDay[day].slice().sort((a, b) => b.start.localeCompare(a.start));
       const dayTotal = dayEntries.reduce((s, e) => s + durationMinutes(e.start, e.end), 0);
+      const titleText = `${fmtDateLabel(day)} · ${fmtDurationShort(dayTotal)}`;
 
-      group.innerHTML = `<div class="day-title">${fmtDateLabel(day)} · ${fmtDurationShort(dayTotal)}</div>`;
+      const group = document.createElement(collapsible ? "details" : "div");
+      group.className = "day-group";
+
+      if (collapsible) {
+        group.innerHTML = `<summary class="day-title"><span>${titleText}</span>${chevSvg}</summary>`;
+      } else {
+        group.innerHTML = `<div class="day-title">${titleText}</div>`;
+      }
+
       const logEl = document.createElement("div");
       logEl.className = "log";
 
@@ -267,6 +288,8 @@
       group.appendChild(logEl);
       listEl.appendChild(group);
     });
+
+    renderCatManager();
   }
 
   function escapeHtml(s) {
@@ -334,6 +357,126 @@
     renderDashboard();
   });
 
+  /* ---------------- Category management (rename + color) ---------------- */
+  function renderCatManager() {
+    const container = $("#catManageList");
+    if (!container) return;
+    container.innerHTML = "";
+    const chevSvg = `<svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    categories.forEach(cat => {
+      const color = catColor(cat);
+      const det = document.createElement("details");
+      det.className = "cat-row";
+      det.dataset.cat = cat;
+      det.dataset.color = color;
+
+      const swatches = PALETTE.map(c =>
+        `<button type="button" class="swatch-btn${c.toLowerCase() === color.toLowerCase() ? " selected" : ""}" data-color="${c}" style="background:${c}" aria-label="${c}"></button>`
+      ).join("");
+
+      det.innerHTML = `
+        <summary>
+          <span class="cat-swatch" style="background:${color}"></span>
+          <span class="cat-row-name">${escapeHtml(cat)}</span>
+          ${chevSvg}
+        </summary>
+        <div class="cat-editor">
+          <div class="field">
+            <label>Nom</label>
+            <input type="text" class="cat-rename-input" value="${escapeHtml(cat)}">
+          </div>
+          <div class="field">
+            <label>Couleur</label>
+            <div class="swatch-palette">
+              ${swatches}
+              <span class="custom-color-wrap" style="background:${color}">
+                <input type="color" class="cat-custom-color" value="${color}">
+              </span>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top:14px;">
+            <button type="button" class="btn btn-ghost cat-cancel">Annuler</button>
+            <button type="button" class="btn btn-primary cat-save">Enregistrer</button>
+          </div>
+        </div>`;
+      container.appendChild(det);
+    });
+  }
+
+  $("#catManageList").addEventListener("click", (ev) => {
+    const det = ev.target.closest("details.cat-row");
+    if (!det) return;
+
+    const swatchBtn = ev.target.closest(".swatch-btn");
+    if (swatchBtn) {
+      det.dataset.color = swatchBtn.dataset.color;
+      det.querySelectorAll(".swatch-btn").forEach(b => b.classList.toggle("selected", b === swatchBtn));
+      det.querySelector(".custom-color-wrap").style.background = swatchBtn.dataset.color;
+      det.querySelector(".cat-custom-color").value = swatchBtn.dataset.color;
+      return;
+    }
+
+    if (ev.target.closest(".cat-cancel")) {
+      det.open = false;
+      return;
+    }
+
+    if (ev.target.closest(".cat-save")) {
+      const oldName = det.dataset.cat;
+      const newName = det.querySelector(".cat-rename-input").value;
+      const color = det.dataset.color;
+      const ok = renameCategory(oldName, newName, color);
+      if (ok) {
+        det.open = false;
+        populateCatSelect($("#f-cat"));
+        populateCatSelect($("#e-cat"));
+        renderDashboard();
+        toast("Catégorie mise à jour");
+      }
+    }
+  });
+
+  $("#catManageList").addEventListener("input", (ev) => {
+    if (ev.target.classList.contains("cat-custom-color")) {
+      const det = ev.target.closest("details.cat-row");
+      const color = ev.target.value;
+      det.dataset.color = color;
+      det.querySelector(".custom-color-wrap").style.background = color;
+      det.querySelectorAll(".swatch-btn").forEach(b => b.classList.toggle("selected", b.dataset.color.toLowerCase() === color.toLowerCase()));
+    }
+  });
+
+  function renameCategory(oldName, newNameRaw, color) {
+    const newName = (newNameRaw || "").trim();
+    if (!newName) { toast("Le nom ne peut pas être vide"); return false; }
+    if (newName === "__add__") { toast("Ce nom n'est pas autorisé"); return false; }
+
+    const isRename = newName !== oldName;
+    const mergeTarget = isRename && categories.includes(newName);
+
+    if (isRename) {
+      if (mergeTarget) {
+        const ok = confirm(`"${newName}" existe déjà. Fusionner "${oldName}" avec "${newName}" ? Les activités de "${oldName}" seront réaffectées à "${newName}".`);
+        if (!ok) return false;
+        categories = categories.filter(c => c !== oldName);
+        delete catColors[oldName];
+      } else {
+        const idx = categories.indexOf(oldName);
+        if (idx !== -1) categories[idx] = newName;
+        if (catColors[oldName]) { catColors[newName] = catColors[oldName]; delete catColors[oldName]; }
+      }
+      entries.forEach(e => { if (e.category === oldName) e.category = newName; });
+      saveEntries(entries);
+    }
+
+    if (color) catColors[newName] = color;
+
+    saveCats(categories);
+    saveCatColors(catColors);
+    return true;
+  }
+
   /* ---------------- Export / Import ---------------- */
   function csvEscape(v) {
     const s = String(v ?? "");
@@ -366,7 +509,7 @@
   }
 
   function exportJSONBackup() {
-    const payload = { app: "carnet-de-bord", version: 1, exportedAt: new Date().toISOString(), categories, entries };
+    const payload = { app: "carnet-de-bord", version: 1, exportedAt: new Date().toISOString(), categories, categoryColors: catColors, entries };
     downloadBlob(`carnet-de-bord_sauvegarde_${todayISO()}.json`, JSON.stringify(payload, null, 2), "application/json");
     toast("Sauvegarde JSON téléchargée");
   }
@@ -393,6 +536,12 @@
       if (Array.isArray(data.categories)) {
         data.categories.forEach(c => { if (c && !categories.includes(c)) categories.push(c); });
         saveCats(categories);
+      }
+      if (data.categoryColors && typeof data.categoryColors === "object") {
+        Object.entries(data.categoryColors).forEach(([cat, color]) => {
+          if (typeof color === "string" && !catColors[cat]) catColors[cat] = color;
+        });
+        saveCatColors(catColors);
       }
       saveEntries(entries);
       populateCatSelect($("#f-cat"));

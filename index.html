@@ -9,6 +9,8 @@
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180-maskable.png">
 <link rel="stylesheet" href="style.css">
+<link rel="preload" href="fonts/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/JetBrainsMono-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 <div class="app">
@@ -80,6 +82,12 @@
       <div class="chart" id="chart"></div>
 
       <div id="logList"></div>
+
+      <div class="card" id="catManageCard">
+        <h2>Catégories</h2>
+        <p class="hint">Touche une catégorie pour la renommer (répercuté sur toutes les activités déjà saisies) ou changer sa couleur.</p>
+        <div id="catManageList"></div>
+      </div>
 
       <div class="card" id="dataCard">
         <h2>Données</h2>

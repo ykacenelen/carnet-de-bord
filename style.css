@@ -1,3 +1,18 @@
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  src:url('fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight:600;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   --paper:#F5F2EA;
   --paper-alt:#EDE8DA;
@@ -16,7 +31,7 @@
   --radius-l:20px;
   --font-display: Georgia,'Iowan Old Style','Palatino Linotype','Book Antiqua',serif;
   --font-body: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-  --font-mono: ui-monospace,'SF Mono','Roboto Mono',Consolas,'Courier New',monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace,'SF Mono','Roboto Mono',Consolas,'Courier New',monospace;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -303,6 +318,85 @@ nav.tabbar button.active svg{stroke:var(--accent);}
 .empty .glyph{font-family:var(--font-display); font-size:32px; color:var(--line); margin-bottom:6px;}
 .empty p{margin:4px 0 0; font-size:13.5px; line-height:1.5;}
 
+/* ---------- Category management (rename + color) ---------- */
+details.cat-row{
+  border:1px solid var(--line);
+  border-radius:var(--radius-s);
+  margin-bottom:8px;
+  background:var(--paper-alt);
+  overflow:hidden;
+}
+details.cat-row summary{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  cursor:pointer;
+  list-style:none;
+  -webkit-tap-highlight-color:transparent;
+}
+details.cat-row summary::-webkit-details-marker{display:none;}
+details.cat-row summary .cat-swatch{
+  width:16px; height:16px; border-radius:50%;
+  flex:0 0 auto;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+details.cat-row summary .cat-row-name{
+  flex:1;
+  font-size:14.5px;
+  font-weight:600;
+}
+details.cat-row summary .chev{
+  width:14px; height:14px;
+  stroke:var(--ink-faint);
+  fill:none;
+  stroke-width:2;
+  transition:transform .18s ease;
+  flex:0 0 auto;
+}
+details.cat-row[open] summary .chev{transform:rotate(180deg);}
+
+.cat-editor{
+  padding:2px 12px 14px;
+  border-top:1px solid var(--line);
+}
+.cat-editor .field{margin-top:12px; margin-bottom:0;}
+
+.swatch-palette{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  align-items:center;
+  margin-top:8px;
+}
+.swatch-palette .swatch-btn{
+  width:26px; height:26px;
+  border-radius:50%;
+  border:2px solid transparent;
+  cursor:pointer;
+  padding:0;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+.swatch-palette .swatch-btn.selected{
+  border-color:var(--ink);
+}
+.swatch-palette .custom-color-wrap{
+  width:26px; height:26px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid var(--line);
+  position:relative;
+}
+.swatch-palette .custom-color-wrap input[type=color]{
+  position:absolute;
+  top:-4px; left:-4px;
+  width:38px; height:38px;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  background:none;
+}
+
 /* ---------- Log list (signature element: dotted margin) ---------- */
 .day-group{margin-bottom:22px;}
 .day-group .day-title{
@@ -313,6 +407,35 @@ nav.tabbar button.active svg{stroke:var(--accent);}
   color:var(--ink-faint);
   margin:0 0 10px 2px;
 }
+
+/* day-group as <details> when a multi-day period is active */
+details.day-group{margin-bottom:14px;}
+details.day-group summary.day-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  list-style:none;
+  padding:9px 10px;
+  margin:0 0 0 0;
+  background:var(--paper-alt);
+  border:1px solid var(--line);
+  border-radius:var(--radius-s);
+  -webkit-tap-highlight-color:transparent;
+}
+details.day-group summary.day-title::-webkit-details-marker{display:none;}
+details.day-group summary.day-title .chev{
+  width:14px; height:14px;
+  stroke:var(--ink-faint);
+  fill:none;
+  stroke-width:2;
+  transition:transform .18s ease;
+  flex:0 0 auto;
+  margin-left:8px;
+}
+details.day-group[open] summary.day-title .chev{transform:rotate(180deg);}
+details.day-group .log{margin-top:10px;}
+
 .log{
   position:relative;
   padding-left:22px;

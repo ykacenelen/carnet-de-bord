@@ -1,4 +1,4 @@
-const CACHE = "carnet-de-bord-v2";
+const CACHE = "carnet-de-bord-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -7,7 +7,9 @@ const ASSETS = [
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
-  "./icon-180-maskable.png"
+  "./icon-180-maskable.png",
+  "./fonts/JetBrainsMono-Regular.woff2",
+  "./fonts/JetBrainsMono-SemiBold.woff2"
 ];
 
 self.addEventListener("install", (ev) => {
