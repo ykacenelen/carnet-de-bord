@@ -65,11 +65,14 @@ navigateur, sur ton téléphone.
 - **Onglet Bord** : filtre par période (Aujourd'hui / 7 jours / Ce mois /
   Tout), total de temps consigné, histogramme du temps par catégorie, puis
   la liste chronologique des activités groupées par jour. Toucher une
-  activité l'ouvre en modification (et permet de la supprimer).
+  activité l'ouvre en modification (et permet de la supprimer). En bas,
+  la carte "Données" (export/sauvegarde, voir plus bas).
+- **Onglet Réglages** : gestion des catégories (renommer, changer la
+  couleur — voir plus bas).
 
 ## Gérer les catégories (renommer, changer la couleur)
 
-Dans l'onglet **Bord**, la carte "Catégories" liste toutes les catégories
+Dans l'onglet **Réglages**, la carte "Catégories" liste toutes les catégories
 existantes. Touche-en une pour déplier son éditeur :
 
 - **Renommer** : modifie le champ "Nom" puis "Enregistrer" — toutes les
@@ -79,10 +82,12 @@ existantes. Touche-en une pour déplier son éditeur :
   d'une catégorie qui existe déjà, l'appli te demande confirmation puis
   fusionne les deux (toutes les activités des deux anciennes catégories
   se retrouvent sous le nom commun).
-- **Couleur** : choisis une des pastilles de la palette, ou utilise le
-  sélecteur personnalisé (dernier rond) pour une couleur libre. Elle
-  s'applique immédiatement à l'étiquette dans la liste et à la barre dans
-  l'histogramme.
+- **Couleur** : choisis une des 16 pastilles de la palette (large éventail
+  de teintes, plus vives que la version précédente), ou utilise le
+  sélecteur personnalisé (dernier rond) pour une couleur totalement libre.
+  Elle s'applique immédiatement au point de couleur dans la liste et à la
+  barre dans l'histogramme. Le texte des étiquettes reste toujours en
+  encre foncée pour rester lisible quelle que soit la couleur choisie.
 
 ## Récapitulatif journalier repliable
 

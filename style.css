@@ -229,6 +229,7 @@ nav.tabbar button.active svg{stroke:var(--accent);}
   border-radius:999px;
   font-size:12px;
   font-weight:600;
+  color:var(--ink);
 }
 .chip .sw{width:7px;height:7px;border-radius:50%;}
 

@@ -7,7 +7,12 @@
   const LS_CATCOLORS = "carnet_category_colors_v1";
 
   const DEFAULT_CATS = ["Bricolage", "IA", "Renfo", "Travail", "Sport", "Lecture", "Famille", "Trajet", "Autre"];
-  const PALETTE = ["#35634F", "#A6702E", "#3E5C76", "#8C4A6B", "#5B7A3A", "#9C4132", "#4A6E6A", "#7A5C3E"];
+  const PALETTE = [
+    "#B54B3C", "#C97A3E", "#B98B2E", "#3F7D58",
+    "#6B8E4E", "#2F7A6B", "#3E6FA6", "#3E8FA6",
+    "#5B5FA6", "#8C4A9E", "#B0559E", "#C15A82",
+    "#A6702E", "#8A6A4E", "#6B6F76", "#9C4132"
+  ];
 
   function loadEntries() {
     try { return JSON.parse(localStorage.getItem(LS_ENTRIES)) || []; }
@@ -101,6 +106,7 @@
     $(`#view-${name}`).classList.add("active");
     $$(".tabbar button").forEach(b => b.classList.toggle("active", b.dataset.view === name));
     if (name === "bord") renderDashboard();
+    if (name === "reglages") renderCatManager();
   }
   $$(".tabbar button").forEach(b => b.addEventListener("click", () => switchView(b.dataset.view)));
 
@@ -278,7 +284,7 @@
           <span class="time">${e.start} – ${e.end}</span><span class="dur">${fmtDuration(mins)}</span>
           ${e.desc ? `<div class="desc">${escapeHtml(e.desc)}</div>` : ""}
           <div class="meta">
-            <span class="chip" style="background:${catColor(e.category)}22; color:${catColor(e.category)}">
+            <span class="chip" style="background:${catColor(e.category)}22;">
               <span class="sw" style="background:${catColor(e.category)}"></span>${escapeHtml(e.category)}
             </span>
           </div>`;
